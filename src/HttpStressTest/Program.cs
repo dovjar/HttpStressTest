@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 using Newtonsoft.Json;
-using System;
+using Serilog;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
@@ -19,6 +19,10 @@ namespace HttpStressTest
     {
         static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
             CommandLine.Parser.Default.ParseArguments<CliOptions>(args)
             .WithParsed(RunOptions)
             .WithNotParsed(HandleParseError);
@@ -55,7 +59,7 @@ namespace HttpStressTest
             var testCase = new TestCase(JsonConvert.DeserializeObject<TestCaseDefinition>(File.ReadAllText(opts.ScenarioFile)));
 
             //run warmup
-            new HttpTestScenario(testCase.WarmUpSteps, testCase.GlobalParameters).ExecuteScenario(null);
+            new HttpTestScenario(testCase.WarmUpSteps, testCase.GlobalParameters).ExecuteScenario(new StubIteration());
 
 
             // [2] Results aggregation (Or raw measurement collection, see RawDataMeasurementsDemo.cs)

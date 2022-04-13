@@ -1,4 +1,5 @@
-﻿using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+﻿using Serilog;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace HttpStressTest
 {
@@ -30,7 +31,9 @@ namespace HttpStressTest
             {
                HttpRequestMessage request=  step.ConstructHttpMessage(testData);
                var response= httpClient.Send(request);
-               if (step.AllowedStatuses.Length > 0 && !step.AllowedStatuses.Contains(((int)response.StatusCode)))
+               Log.Logger.Information("{threadId}: {requestUri} {statusCode}",context.ThreadId, request.RequestUri, response.StatusCode);
+               
+                if (step.AllowedStatuses.Length > 0 && !step.AllowedStatuses.Contains(((int)response.StatusCode)))
                    throw new Exception($"unexpected result from server - status code: {response.StatusCode}");
 
                if(!string.IsNullOrEmpty(step.ResponseRegex))

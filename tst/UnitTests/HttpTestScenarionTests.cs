@@ -28,30 +28,7 @@ namespace UnitTests
                 TestContext.WriteLine($"{entry.RequestMessage.Url} - {entry.ResponseMessage.StatusCode} - {entry.ResponseMessage.BodyOriginal}"); 
         }
     }
-    public class StubIteration : IIteration
-    {
-        public TimeSpan IterationElapsedTime => throw new NotImplementedException();
-
-        public ITimer Timer => throw new NotImplementedException();
-
-        public object UserData { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public int GlobalIterationId => throw new NotImplementedException();
-
-        public int ThreadIterationId => throw new NotImplementedException();
-
-        public int ThreadId => throw new NotImplementedException();
-
-        public void Checkpoint(string checkpointName = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetError(object error)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    
     public class HttpTestScenarionTests
     {
         int port;
@@ -241,7 +218,7 @@ namespace UnitTests
                                             },
                                         }
                                     });
-            new HttpTestScenario(testCase.WarmUpSteps, testCase.GlobalParameters).ExecuteScenario(null);
+            new HttpTestScenario(testCase.WarmUpSteps, testCase.GlobalParameters).ExecuteScenario(new StubIteration());
             var scenario  = new HttpTestScenario(testCase.Steps,testCase.GlobalParameters);
 
             //act
