@@ -1,0 +1,14 @@
+{
+  "globalParameters": {
+    "jwt": "test"
+  },
+  "steps": [
+    {
+      "id": "1",
+      "get": "http://www.delfi.lt?query={{param1}}",
+      "headers": [],
+      "body": "",
+      "responseBodyRegex": ""
+    }
+  ]
+}

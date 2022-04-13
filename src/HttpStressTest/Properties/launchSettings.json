@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HttpStressTest": {
+      "commandName": "Project",
+      "commandLineArgs": "-s 10 -c testCase.json -t 2"
+    }
+  }
+}
