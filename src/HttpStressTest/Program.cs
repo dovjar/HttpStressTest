@@ -20,7 +20,7 @@ namespace HttpStressTest
         static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.File($"httpStressTest-{DateTime.Now:yyyy-MM-ddTHH-mm-ss}.txt")
                 .CreateLogger();
 
             CommandLine.Parser.Default.ParseArguments<CliOptions>(args)
@@ -57,7 +57,7 @@ namespace HttpStressTest
                     .Select(line => new Dictionary<string, string>(headers.Select(header => new KeyValuePair<string, string>(header, line[header]))));
             }
             var testCase = new TestCase(JsonConvert.DeserializeObject<TestCaseDefinition>(File.ReadAllText(opts.ScenarioFile)));
-
+            Log.Logger.Information("{@testCase}",testCase);
             //run warmup
             new HttpTestScenario(testCase.WarmUpSteps, testCase.GlobalParameters).ExecuteScenario(new StubIteration());
 

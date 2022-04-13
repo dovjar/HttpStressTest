@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 
 namespace HttpStressTest
 {
@@ -41,15 +42,25 @@ namespace HttpStressTest
             HttpRequestMessage message = new HttpRequestMessage();
             message.Method = string.IsNullOrEmpty(Post) ? HttpMethod.Get : HttpMethod.Post;
             message.RequestUri = new Uri(message.Method ==HttpMethod.Get?Replace(Get,testData):Replace(Post, testData) );
-            foreach(var header in Headers)
-            {
-                var head=header.Split(':', StringSplitOptions.TrimEntries);
-                message.Headers.Add(head[0], Replace(head[1],testData));
-            }
             if (message.Method == HttpMethod.Post && Body!=null)
             {
                 message.Content =  new StringContent(Replace(Body,testData)) ;
             }
+            foreach(var header in Headers)
+            {
+                var head=header.Split(':', StringSplitOptions.TrimEntries);
+                if (head[0].Equals("content-type", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    message.Content.Headers.ContentType = new MediaTypeHeaderValue(Replace(head[1], testData));
+                }
+                else
+                {
+                    message.Headers.Add(head[0], Replace(head[1],testData));
+                }
+                
+                   
+            }
+            
             return message;
         }
         public Dictionary<string,string> ParseFromResponse(string text)

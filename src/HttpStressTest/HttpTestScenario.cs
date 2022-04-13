@@ -27,21 +27,32 @@ namespace HttpStressTest
 
         public void ExecuteScenario(IIteration context)
         {
-            foreach(var step in steps)
+            try
             {
-               HttpRequestMessage request=  step.ConstructHttpMessage(testData);
-               var response= httpClient.Send(request);
-               Log.Logger.Information("{threadId}: {requestUri} {statusCode}",context.ThreadId, request.RequestUri, response.StatusCode);
-               
-                if (step.AllowedStatuses.Length > 0 && !step.AllowedStatuses.Contains(((int)response.StatusCode)))
-                   throw new Exception($"unexpected result from server - status code: {response.StatusCode}");
-
-               if(!string.IsNullOrEmpty(step.ResponseRegex))
+                foreach (var step in steps)
                 {
-                    var bodyTask = response.Content.ReadAsStringAsync();
-                    bodyTask.Wait();
-                    testData.Upsert( step.ParseFromResponse(bodyTask.Result));
+                    HttpRequestMessage request = step.ConstructHttpMessage(testData);
+                    var response = httpClient.Send(request);
+                    Log.Logger.Information("{threadId}: {requestUri} {statusCode}", context.ThreadId,
+                        request.RequestUri, response.StatusCode);
+
+                    if (step.AllowedStatuses.Length > 0 && !step.AllowedStatuses.Contains(((int)response.StatusCode)))
+                        throw new Exception($"unexpected result from server - status code: {response.StatusCode}");
+
+                    if (!string.IsNullOrEmpty(step.ResponseRegex))
+                    {
+                        var bodyTask = response.Content.ReadAsStringAsync();
+                        bodyTask.Wait();
+                        Log.Logger.Information("parsing {regex} from {body}",step.ResponseRegex, bodyTask.Result);
+                        testData.Upsert(step.ParseFromResponse(bodyTask.Result));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "{threadId}:", context.ThreadId);
+                System.Threading.Thread.Sleep(1000);
+                throw;
             }
         }
 
