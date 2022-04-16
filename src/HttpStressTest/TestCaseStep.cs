@@ -16,6 +16,7 @@ namespace HttpStressTest
             this.Body= definition.Body;
             this.ResponseRegex = definition.ResponseRegex;
             this.AllowedStatuses= definition.AllowedStatuses;
+            this.Skip = definition.Skip;
 
             var pList = new List<string>();
             if (!string.IsNullOrEmpty(Get))

@@ -29,7 +29,7 @@ namespace HttpStressTest
         {
             try
             {
-                foreach (var step in steps)
+                foreach (var step in steps.Where(t=>!t.Skip))
                 {
                     HttpRequestMessage request = step.ConstructHttpMessage(testData);
                     var response = httpClient.Send(request);

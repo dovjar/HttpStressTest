@@ -9,5 +9,6 @@
         public string? Body { get; set; }
         public string? ResponseRegex {get;set;}
         public int[] AllowedStatuses {get;set;}= Array.Empty<int>();
+        public bool Skip {get;set;} = false;
     }
 }
