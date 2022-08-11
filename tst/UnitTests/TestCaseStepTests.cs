@@ -20,7 +20,7 @@ namespace UnitTests
             {
                 Id="vienas",
                 Get="https://www.delfi.lt"
-            });
+            }, new TestCaseOptions(":"));
             //assert
             Assert.IsEmpty(step.Parameters);
         }
@@ -34,7 +34,7 @@ namespace UnitTests
             {
                 Id="vienas",
                 Get="https://www.delfi.lt?query={{param1}}"
-            });
+            }, new TestCaseOptions(":"));
             //assert
             CollectionAssert.AreEqual(new[]{"param1"}, step.Parameters);
         }
@@ -49,7 +49,7 @@ namespace UnitTests
                 Id="vienas",
                 Post="https://www.delfi.lt?query={{param1}}",
                 Body="{{param1}}={{param2}}",
-            });
+            }, new TestCaseOptions(":"));
             //assert
             CollectionAssert.AreEqual(new[]{"param1","param2"}, step.Parameters);
         }

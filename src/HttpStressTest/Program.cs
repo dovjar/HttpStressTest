@@ -58,10 +58,10 @@ namespace HttpStressTest
             }
 
             var options = new TestCaseOptions(opts.HeadersSeparator);
-            var testCase = new TestCase(JsonConvert.DeserializeObject<TestCaseDefinition>(File.ReadAllText(opts.ScenarioFile)));
+            var testCase = new TestCase(JsonConvert.DeserializeObject<TestCaseDefinition>(File.ReadAllText(opts.ScenarioFile)), options);
             Log.Logger.Information("{@testCase}",testCase);
             //run warmup
-            new HttpTestScenario(testCase.WarmUpSteps, testCase.GlobalParameters,options ).ExecuteScenario(new StubIteration());
+            new HttpTestScenario(testCase.WarmUpSteps, testCase.GlobalParameters ).ExecuteScenario(new StubIteration());
 
 
             // [2] Results aggregation (Or raw measurement collection, see RawDataMeasurementsDemo.cs)

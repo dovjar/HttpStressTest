@@ -13,7 +13,7 @@ namespace UnitTests
             {
                 Id="vienas",
                 ResponseRegex = "(\"jwt\"\\s*:\\s*\"(?<jwt>[a-zA-Z0-9._]+)\")"
-            }); 
+            }, new TestCaseOptions(":")); 
 
             var text=@"
 {
