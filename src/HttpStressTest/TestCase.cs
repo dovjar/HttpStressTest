@@ -1,11 +1,13 @@
 ﻿namespace HttpStressTest
 {
+    public record TestCaseOptions(string HeadersSeparator);
     public class TestCase
     {
-        public TestCase(TestCaseDefinition caseDefinition)
+
+        public TestCase(TestCaseDefinition caseDefinition, TestCaseOptions options)
         {
-            Steps = caseDefinition.Steps.Select(t=>new TestCaseStep(t)).ToArray();
-            WarmUpSteps = caseDefinition.WarmUpSteps.Select(t=>new TestCaseStep(t)).ToArray();
+            Steps = caseDefinition.Steps.Select(t=>new TestCaseStep(t, options)).ToArray();
+            WarmUpSteps = caseDefinition.WarmUpSteps.Select(t=>new TestCaseStep(t,options)).ToArray();
             GlobalParameters = caseDefinition.GlobalParameters;
 
         }

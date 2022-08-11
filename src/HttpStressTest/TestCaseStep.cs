@@ -5,9 +5,11 @@ namespace HttpStressTest
 {
     public class TestCaseStep : TestCaseStepDefinition
     {
+        private readonly TestCaseOptions options;
         private static Regex regex = new Regex("({(?<param>[a-zA-Z0-9_]+)})", RegexOptions.Multiline | RegexOptions.Compiled);
-        public TestCaseStep(TestCaseStepDefinition definition)
+        public TestCaseStep(TestCaseStepDefinition definition, TestCaseOptions options)
         {
+            this.options = options;
             //copy
             this.Id= definition.Id;
             this.Get= definition.Get;
@@ -45,11 +47,11 @@ namespace HttpStressTest
             message.RequestUri = new Uri(message.Method ==HttpMethod.Get?Replace(Get,testData):Replace(Post, testData) );
             if (message.Method == HttpMethod.Post && Body!=null)
             {
-                message.Content =  new StringContent(Replace(Body,testData)) ;
+                message.Content =  new StringContent(Replace(Body,testData),System.Text.Encoding.UTF8) ;
             }
             foreach(var header in Headers)
             {
-                var head=header.Split(':', StringSplitOptions.TrimEntries);
+                var head=header.Split(options.HeadersSeparator, StringSplitOptions.TrimEntries);
                 if (head[0].Equals("content-type", StringComparison.InvariantCultureIgnoreCase))
                 {
                     message.Content.Headers.ContentType = new MediaTypeHeaderValue(Replace(head[1], testData));
