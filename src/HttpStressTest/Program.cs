@@ -8,6 +8,7 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
@@ -83,13 +84,15 @@ namespace HttpStressTest
                 new ErrorCountMetric(false),
                 new TransactionsPerSecMetric()
             );
-
+            ILimitStrategy limit = opts.Seconds == 0
+                ? new IterationLimit(opts.ThreadCount)
+                : new TimeLimit(TimeSpan.FromSeconds(opts.Seconds));
             // [3] Execution settings
             // Using StrategyBuilder put defined aggregation, scenario, and execution settings into one object
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetAggregator(aggregator, kpiPrinter) // Optional
                 .SetScenario(new HttpTestScenarioFactory(testCase,testData.ToArray())) // Required
-                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(opts.Seconds))) // Optional, but if not provided, execution will never stop - unless running test with RunAsync() and stopping later with CancelAsync(true)
+                .SetLimit(limit) // Optional, but if not provided, execution will never stop - unless running test with RunAsync() and stopping later with CancelAsync(true)
                                                                              //    .SetSpeed(new FixedSpeed(100000)) // Optional (Skip for maximum throughput)
                 .SetThreading(new FixedThreadCount(opts.ThreadCount)); // Required
 

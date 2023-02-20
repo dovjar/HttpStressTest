@@ -16,7 +16,7 @@ namespace HttpStressTest
         [Option('c', "scenario", Required = true, HelpText = "json file containing test case.")]
         public string ScenarioFile { get; set; } = "";
 
-        [Option('h', "headersSeparator", Required = true, HelpText = "string to separate headers in test file, default ':'.")]
+        [Option('h', "headersSeparator", Required = false, HelpText = "string to separate headers in test file, default ':'.")]
         public string HeadersSeparator { get; set; } = ":";
 
     }

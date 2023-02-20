@@ -1,14 +1,17 @@
 {
-  "globalParameters": {
-    "jwt": "test"
-  },
   "steps": [
     {
       "id": "1",
-      "get": "http://www.delfi.lt?query={{param1}}",
+      "post": "http://localhost:5225/PosV2/1/OpenFiscalDay?fiscalDayNo=1",
       "headers": [],
       "body": "",
-      "responseBodyRegex": ""
-    }
+      "skip": true
+    },
+    {
+      "id": "2",
+      "post": "http://localhost:5225/PosV2/1/CloseFiscalDay",
+      "headers": [ "Content-Type: application/json" ],
+      "body": "{      'fiscalDayNo': 1,      'fiscalDayCounters': [        {          'fiscalCounterTypeId': 'SaleByTax',          'fiscalCounterValue': 0        }      ]    } "
+},	
   ]
 }
